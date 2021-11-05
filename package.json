@@ -11,7 +11,7 @@
     "processing",
     "p5.js"
   ],
-  "author": "Danny Ruchtie",
+  "author": "Emma Dupuis, Maxime Dirksen, Simon Renard",
   "license": "MIT",
   "devDependencies": {
     "serve": "^11.2.0"
