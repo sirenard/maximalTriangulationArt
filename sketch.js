@@ -1,19 +1,68 @@
 /* eslint-disable no-undef, no-unused-vars */
 
+const states = {
+  DRAWING: 0,
+  DONE: 1
+};
+
+let currentState = states.DRAWING;
+let points = [];
+let triangles = [];
+let solveButton, resetButton;
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  // Put setup code here
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.mousePressed(canvasClicked); //click on buttons are not detected
+
+  resetButton = createButton("Reset");
+  resetButton.position(30, 85);
+  resetButton.mousePressed(reset);
+
+  solveButton = createButton("Solve");
+  solveButton.position(100, 85);
+  solveButton.mousePressed(solve);
+
 }
 
 function draw() {
-  // Put drawings here
-  fill(234, 31, 81);
-  noStroke();
-  rect(50, 50, 250, 250);
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", 60, 250);
+  background(128);
+  textSize(30);
+  fill("Black");
+  stroke("Black");
+  switch (currentState) {
+    case states.DRAWING: {
+      text("Draw a convex polygon (don't worry, the convex hull will be computed for you)", 30, 50);
+      points.map(p => p.draw());
+      break;
+    }
+    case states.DONE: {
+      text("Here is your piece of art !", 30, 50);
+      triangles.map(t=>t.draw());
+      break;
+    }
+  }
+}
+
+function solve(){
+  currentState = states.DONE;
+  solveButton.hide();
+
+  let polygon = new Polygon(points); // thus points = CH(points);
+  //triangulate and add to the list triangles all the triangles
+  //compute the smallest enclosing triangle and add it to the triangles list
+}
+
+function reset(){
+  currentState = states.DRAWING;
+  points = [];
+  triangles = [];
+  solveButton.show();
+}
+
+function canvasClicked(){
+  if (currentState === states.DRAWING){
+    points.push(new Point(mouseX, mouseY));
+  }
 }
 
 // This Redraws the Canvas when resized

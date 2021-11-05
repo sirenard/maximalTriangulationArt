@@ -1,14 +1,16 @@
 {
-  "name": "p5js",
+  "name": "Triart",
   "version": "1.0.0",
-  "description": "p5.js is a JavaScript library for creative coding.",
+  "description": "Computational geometry project",
   "main": "sketch.js",
   "scripts": {
     "start": "serve",
     "build": "echo This is a static template, there is no bundler or bundling involved!"
   },
   "keywords": [
-    "processing",
+    "art",
+    "polygons",
+    "Emma",
     "p5.js"
   ],
   "author": "Emma Dupuis, Maxime Dirksen, Simon Renard",
