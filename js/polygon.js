@@ -20,12 +20,9 @@ class Polygon {
         this.fill = fill;
     }
 
-    /* return the next clockwise point index after points[i],
-    return null if the next index is equal to limit */
-    next(i, limit) {
-        let j = (i + 1) % this.points.length;
-        if (j === limit) return i;
-        return j;
+    /* return the next clockwise point index after points[i] */
+    next(i) {
+        return (i + 1) % this.points.length;
     }
 
     /* return list of points between index [i, j] (i j include) */
