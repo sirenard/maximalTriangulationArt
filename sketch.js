@@ -48,7 +48,7 @@ function solve(){
   solveButton.hide();
 
   let polygon = new Polygon(points); // thus points = CH(points);
-  //triangulate and add to the list triangles all the triangles
+  maximal_triangulation(polygon, triangles);
   //compute the smallest enclosing triangle and add it to the triangles list
 }
 

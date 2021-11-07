@@ -14,18 +14,28 @@ class Point {
 }
 
 class Polygon {
-    constructor(points, fill = "blue", convexHull = true) {
+    constructor(points, convexHull = true, fill = "blue") {
         this.points = points;
-        if (convexHull) this.gram_scan();
+        if (convexHull) this.graham_scan();
         this.fill = fill;
     }
 
-    next(i) {
-        return (i + 1) % this.points.length;
+    /* return the next clockwise point index after points[i],
+    return null if the next index is equal to limit */
+    next(i, limit) {
+        let j = (i + 1) % this.points.length;
+        if (j === limit) return i;
+        return j;
     }
 
-    previous(i) {
-        return (i - 1 + this.points.length) % this.points.length;
+    /* return list of points between index [i, j] (i j include) */
+    ptn_between(i, j) {
+        let sub_points = [this.points[i]]
+        while (i !== j){
+            i = this.next(i)
+            sub_points.push(this.points[i]);
+        }
+        return sub_points;
     }
 
     draw() {
@@ -36,25 +46,23 @@ class Polygon {
         endShape(CLOSE);
     }
 
-    gram_scan() {
-        if (this.points.length > 2) {
-            let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
-            this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
-            let stack = [this.points[0], this.points[1]];
-            for (let i = 2; i < this.points.length; ++i) {
-                while (
-                    stack.length > 1 &&
-                    !this.lt_orientation(
-                        stack[stack.length - 2],
-                        stack[stack.length - 1],
-                        this.points[i]
-                    )
-                    )
-                    stack.pop();
-                stack.push(this.points[i]);
-            }
-            this.points = stack;
+    graham_scan() {
+        let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
+        this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
+        let stack = [this.points[0], this.points[1]];
+        for (let i = 2; i < this.points.length; ++i) {
+            while (
+                stack.length > 1 &&
+                !this.lt_orientation(
+                    stack[stack.length - 2],
+                    stack[stack.length - 1],
+                    this.points[i]
+                )
+                )
+                stack.pop();
+            stack.push(this.points[i]);
         }
+        this.points = stack;
     }
 
     // return the turn orientation formed by p1 p2 p3: true if left otherwise false
@@ -82,13 +90,16 @@ class Polygon {
 
 class Triangle extends Polygon {
     constructor(points) {
-        console.assert(points.length === 3)
-        super(points);
+        console.assert(points.length === 3);
+        console.log(points.length);
+        super(points, false);
+        this.a = this.points[0];
+        this.b = this.points[1];
+        this.c = this.points[2];
     }
 
     area() {
-        let a, b, c;
-        [a, b, c] = this.points;
-        return 0.5 * Math.abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y))
+        return 0.5 * Math.abs(this.a.x * (this.b.y - this.c.y) + this.b.x * (this.c.y - this.a.y) +
+            this.c.x * (this.a.y - this.b.y))
     }
 }
