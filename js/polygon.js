@@ -28,11 +28,11 @@ class Polygon {
         return (i - 1 + this.points.length) % this.points.length;
     }
 
-    draw() {
+    draw(scale=1) {
         fill(this.fill);
         beginShape();
         for (let i = 0; i < this.points.length; ++i)
-            vertex(this.points[i].x, this.points[i].y)
+            vertex(this.points[i].x*scale, this.points[i].y*scale)
         endShape(CLOSE);
     }
 
@@ -81,9 +81,9 @@ class Polygon {
 }
 
 class Triangle extends Polygon {
-    constructor(points) {
+    constructor(points, fill="blue") {
         console.assert(points.length === 3)
-        super(points);
+        super(points, fill);
     }
 
     area() {
