@@ -88,7 +88,6 @@ class Polygon {
 class Triangle extends Polygon {
     constructor(points) {
         console.assert(points.length === 3);
-        console.log(points.length);
         super(points, false);
         this.a = this.points[0];
         this.b = this.points[1];

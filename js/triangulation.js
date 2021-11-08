@@ -14,6 +14,8 @@ function biggest_triangle(polygon) {
         while (c !== a) { // find a 2-stable triangle
             while (true) {
                 let c_n = polygon.points[polygon.next(c_i)];
+                console.log(polygon.next(c_i));
+                console.log(area(a, b, c_n), area(a, b, c));
                 if (area(a, b, c_n) >= area(a, b, c)) {
                     c = c_n;
                     c_i = polygon.next(c_i);
@@ -21,7 +23,7 @@ function biggest_triangle(polygon) {
                     break;
             }
 
-            if (area(a, b, c) >= m.area()){
+            if (area(a, b, c) >= m.area()) {
                 m = new Triangle([a, b, c]);
                 m_i = [a_i, b_i, c_i];
             }
