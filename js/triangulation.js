@@ -11,11 +11,9 @@ function biggest_triangle(polygon) {
     let m_i = [a_i, b_i, c_i];
 
     while (true) { // find the biggest 3-stable triangle
-        while (c !== a) { // find a 2-stable triangle
+        while (polygon.next(c_i) !== a_i) { // find a 2-stable triangle
             while (true) {
                 let c_n = polygon.points[polygon.next(c_i)];
-                console.log(polygon.next(c_i));
-                console.log(area(a, b, c_n), area(a, b, c));
                 if (area(a, b, c_n) >= area(a, b, c)) {
                     c = c_n;
                     c_i = polygon.next(c_i);
@@ -50,9 +48,9 @@ function maximal_triangulation(polygon, triangles) {
         return
     else if (polygon.points.length > 3) {
         [triangle, indexes] = biggest_triangle(polygon);
-        //maximal_triangulation(new Polygon(polygon.ptn_between(indexes[0], indexes[1]), false), triangles);
-        //maximal_triangulation(new Polygon(polygon.ptn_between(indexes[1], indexes[2]), false), triangles);
-        //maximal_triangulation(new Polygon(polygon.ptn_between(indexes[2], indexes[0]), false), triangles);
+        maximal_triangulation(new Polygon(polygon.ptn_between(indexes[0], indexes[1]), false), triangles);
+        maximal_triangulation(new Polygon(polygon.ptn_between(indexes[1], indexes[2]), false), triangles);
+        maximal_triangulation(new Polygon(polygon.ptn_between(indexes[2], indexes[0]), false), triangles);
     } else
         triangle = new Triangle([...polygon.points])
 

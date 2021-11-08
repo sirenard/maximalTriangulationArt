@@ -28,7 +28,7 @@ class Polygon {
     /* return list of points between index [i, j] (i j include) */
     ptn_between(i, j) {
         let sub_points = [this.points[i]]
-        while (i !== j){
+        while (i !== j) {
             i = this.next(i)
             sub_points.push(this.points[i]);
         }
@@ -43,6 +43,7 @@ class Polygon {
         endShape(CLOSE);
     }
 
+    /* Compute the convex hull of the polygon by removing internal points */
     graham_scan() {
         let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
         this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
@@ -62,7 +63,7 @@ class Polygon {
         this.points = stack;
     }
 
-    // return the turn orientation formed by p1 p2 p3: true if left otherwise false
+    /* return the turn orientation formed by p1 p2 p3: true if left otherwise false */
     lt_orientation(p1, p2, p3) {
         let cross_product_determinant =
             p1.x * (p2.y - p3.y) - p1.y * (p2.x - p3.x) + p2.x * p3.y - p3.x * p2.y;
@@ -86,16 +87,14 @@ class Polygon {
 }
 
 class Triangle extends Polygon {
-    constructor(points) {
+    constructor(points, fill = "red") {
         console.assert(points.length === 3);
-        super(points, false);
-        this.a = this.points[0];
-        this.b = this.points[1];
-        this.c = this.points[2];
+        super(points, false, fill);
     }
 
     area() {
-        return 0.5 * Math.abs(this.a.x * (this.b.y - this.c.y) + this.b.x * (this.c.y - this.a.y) +
-            this.c.x * (this.a.y - this.b.y))
+        let [a, b, c] = [this.points[0], this.points[1], this.points[2]]
+        return 0.5 * Math.abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) +
+            c.x * (a.y - b.y))
     }
 }
