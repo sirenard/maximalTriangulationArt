@@ -56,7 +56,7 @@ function createPolygon() {
         new Point(5000, shift-1000),
         new Point(3383, shift-413),
         new Point(1213, shift-691)
-    ], color="white", convexHull=false);
+    ],convexHull=false, color="white");
 }
 
 function draw() {
