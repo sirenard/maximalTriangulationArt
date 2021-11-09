@@ -20,6 +20,10 @@ class Polygon {
         this.fill = fill;
     }
 
+    get(i){ //get point i in polygon (cyclic)
+        return this.points[i% this.points.length];
+    }
+
     next(i) {
         return (i + 1) % this.points.length;
     }
