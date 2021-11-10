@@ -14,7 +14,6 @@ class MinEnclosingTriangle {
 
                 if (this.polygon.get(j) !== this.polygon.get(i)){
                     let vertexB = this.getLineIntersection(s1, s2);
-                    //console.log(vertexB, s1[0], s2[0]);
                     if (vertexB) { //not parallel lines
                         for (let k = 0; k < this.polygon.getLength(); ++k) {
                             if (this.polygon.get(k) !== this.polygon.get(i)
@@ -23,9 +22,10 @@ class MinEnclosingTriangle {
                                 && this.polygon.get(k) !== this.polygon.get(j + 1)) {
 
                                 let enclosingTriangle = this.computeEnclosingTriangle(s1, s2, k, vertexB);
-                                if (enclosingTriangle !== null)
-                                    if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area)
+                                if (enclosingTriangle !== null) {
+                                    if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area())
                                         this.minEnclosingTriangle = enclosingTriangle;
+                                }
                             }
                         }
                     }
