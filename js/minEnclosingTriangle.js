@@ -1,15 +1,14 @@
 class MinEnclosingTriangle {
     constructor(polygon){
         this.polygon = polygon;
+        this.minEnclosingTriangle = null;
         this.EPSILON = 10**-5;
     }
 
     findMinEnclosingTriangle(){
         for (let i = 0; i < this.polygon.length; ++i){
-            let s1 = [this.polygon.get(i), this.polygon.get(i+1)]; // first side of enclosing triangle
             for (let j = 0; j < this.polygon[i].length; ++j){
                 if (this.polygon.get(j) !== this.polygon.get(i)){
-                    let s2 = [this.polygon.get(j), this.polygon.get(j+1)]; // second side of enclosing triangle
                     let vertexB = this.getLineIntersection(s1, s2);
                     if (vertexB) { //not parallel lines
                         for (let k = 0; k < this.polygon[i].length; ++k) {
@@ -17,8 +16,9 @@ class MinEnclosingTriangle {
                                 && this.polygon.get(k) !== this.polygon.get(i + 1)
                                 && this.polygon.get(k) !== this.polygon.get(j)
                                 && this.polygon.get(k) !== this.polygon.get(j + 1)) {
-                                this.computeVerticesACFromMidpointB(s1,s2,k);
-                                this.computeVerticesACFromFlushB(s1, s2, k);
+                                let enclosingTriangle = this.computeEnclosingTriangle(i, j, k, vertexB);
+                                if (enclosingTriangle.area() < this.minEnclosingTriangle.area())
+                                    this.minEnclosingTriangle = enclosingTriangle;
                             }
                         }
                     }
@@ -26,7 +26,25 @@ class MinEnclosingTriangle {
             }
         }
     }
-    
+
+    computeEnclosingTriangle(i, j , k, vertexB){
+        let s1 = [this.polygon.get(i), this.polygon.get(i+1)]; // first side of enclosing triangle
+        let s2 = [this.polygon.get(j), this.polygon.get(j+1)]; // second side of enclosing triangle
+        let s3 =  [this.polygon.get(k), this.polygon.get(k+1)];
+
+        //compute vertices A and C for triangle with two flush sides and one tangent with polygon
+        let verticesAC = this.computeVerticesACFromMidpointB(s1,s2,k);
+        let enclosingTangentTriangle = new Triangle([verticesAC[0], vertexB, verticesAC[1]]);
+
+        //compute vertices A and C for triangle with two flush sides and one tangent with polygon
+        let verticesACFlushTriangle = this.computeVerticesACFromFlushB(s1, s2, s3);
+        let flushEnclosingTriangle = new Triangle([verticesACFlushTriangle[0], vertexB, verticesACFlushTriangle[1]]);
+
+        //return smallest enclosing triangle between the two
+        if (enclosingTangentTriangle.area() >  flushEnclosingTriangle.area()) return verticesACFlushTriangle;
+        return enclosingTangentTriangle;
+    }
+
     computeVerticesACFromMidpointB(sideC, sideA, k){
         let sideCParameters = this.getLineEquations(sideC);
         let a1 = sideCParameters[0];
@@ -84,8 +102,10 @@ class MinEnclosingTriangle {
         return Math.abs(value) <= this.EPSILON;
     }
 
-    computeVerticesACFromFlushB(){
-
+    computeVerticesACFromFlushB(sideC, sideA, sideB){
+        let vertexA = getLineEquations(sideA, sideB);
+        let vertexC = getLineEquations(sideC, sideB);
+        return [vertexC, vertexA];
     }
 
     getLineIntersection(line1, line2){
