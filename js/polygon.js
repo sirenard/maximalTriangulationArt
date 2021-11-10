@@ -24,6 +24,9 @@ class Polygon {
         return this.points[i% this.points.length];
     }
 
+    getLength() {
+        return this.points.length;
+    }
     next(i) {
         return (i + 1) % this.points.length;
     }

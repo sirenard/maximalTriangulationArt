@@ -6,19 +6,26 @@ class MinEnclosingTriangle {
     }
 
     findMinEnclosingTriangle(){
-        for (let i = 0; i < this.polygon.length; ++i){
-            for (let j = 0; j < this.polygon[i].length; ++j){
+        for (let i = 0; i < this.polygon.getLength(); ++i){
+            let s1 = [this.polygon.get(i), this.polygon.get(i+1)]; // first side of enclosing triangle
+
+            for (let j = 0; j < this.polygon.getLength(); ++j){
+                let s2 = [this.polygon.get(j), this.polygon.get(j+1)]; // second side of enclosing triangle
+
                 if (this.polygon.get(j) !== this.polygon.get(i)){
                     let vertexB = this.getLineIntersection(s1, s2);
                     if (vertexB) { //not parallel lines
-                        for (let k = 0; k < this.polygon[i].length; ++k) {
+                        for (let k = 0; k < this.polygon.getLength(); ++k) {
                             if (this.polygon.get(k) !== this.polygon.get(i)
                                 && this.polygon.get(k) !== this.polygon.get(i + 1)
                                 && this.polygon.get(k) !== this.polygon.get(j)
                                 && this.polygon.get(k) !== this.polygon.get(j + 1)) {
-                                let enclosingTriangle = this.computeEnclosingTriangle(i, j, k, vertexB);
-                                if (enclosingTriangle.area() < this.minEnclosingTriangle.area())
-                                    this.minEnclosingTriangle = enclosingTriangle;
+
+                                let enclosingTriangle = this.computeEnclosingTriangle(s1, s2, k, vertexB);
+                                if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area)
+                                    if (this.enclosesAllPoints(enclosingTriangle))
+                                            this.minEnclosingTriangle = enclosingTriangle;
+
                             }
                         }
                     }
@@ -27,9 +34,17 @@ class MinEnclosingTriangle {
         }
     }
 
-    computeEnclosingTriangle(i, j , k, vertexB){
-        let s1 = [this.polygon.get(i), this.polygon.get(i+1)]; // first side of enclosing triangle
-        let s2 = [this.polygon.get(j), this.polygon.get(j+1)]; // second side of enclosing triangle
+    enclosesAllPoints(enclosingTriangle){
+        let allPointsPolygon = new Polygon(this.polygon.points.concat(enclosingTriangle));
+        let allPoints = allPointsPolygon.points;
+        allPointsPolygon.gram_scan()
+        for (let i=0; i<allPoints.length; ++i){
+            if (allPoints[i] !== allPointsPolygon.points[i]) return false;
+        }
+        return true;
+    }
+
+    computeEnclosingTriangle(s1, s2 , k, vertexB){
         let s3 =  [this.polygon.get(k), this.polygon.get(k+1)];
 
         //compute vertices A and C for triangle with two flush sides and one tangent with polygon
@@ -41,7 +56,7 @@ class MinEnclosingTriangle {
         let flushEnclosingTriangle = new Triangle([verticesACFlushTriangle[0], vertexB, verticesACFlushTriangle[1]]);
 
         //return smallest enclosing triangle between the two
-        if (enclosingTangentTriangle.area() >  flushEnclosingTriangle.area()) return verticesACFlushTriangle;
+        if (enclosingTangentTriangle.area() >  flushEnclosingTriangle.area()) return flushEnclosingTriangle;
         return enclosingTangentTriangle;
     }
 
@@ -58,16 +73,15 @@ class MinEnclosingTriangle {
         let c2 = sideAParameters[2];
 
         // Polygon point "b" coordinates
-        let m = this.polygon[k].x;
-        let n = this.polygon[k].y;
+        let m = this.polygon.points[k].x;
+        let n = this.polygon.points[k].y;
 
         // Compute vertices A and C x-coordinates
         let x2 = ((2 * b1 * b2 * n) + (c1 * b2) + (2 * a1 * b2 * m) + (b1 * c2)) / ((a1 * b2) - (a2 * b1));
         let x1 = (2 * m) - x2;
 
         // Compute vertices A and C y-coordinates
-        let y2;
-        let y1 ;
+        let y2, y1;
 
         if (this.tendsTo0(b1)) {          // b1 = 0 and b2 != 0
             y2 = ((-c2) - (a2 * x2)) / (b2);
@@ -103,8 +117,8 @@ class MinEnclosingTriangle {
     }
 
     computeVerticesACFromFlushB(sideC, sideA, sideB){
-        let vertexA = getLineEquations(sideA, sideB);
-        let vertexC = getLineEquations(sideC, sideB);
+        let vertexA = this.getLineIntersection(sideA, sideB);
+        let vertexC = this.getLineIntersection(sideC, sideB);
         return [vertexC, vertexA];
     }
 

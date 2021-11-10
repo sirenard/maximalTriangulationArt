@@ -37,6 +37,7 @@ function draw() {
     }
     case states.DONE: {
       text("Here is your piece of art !", 30, 50);
+      points.map(p => p.draw());
       triangles.map(t=>t.draw());
       break;
     }
@@ -50,6 +51,10 @@ function solve(){
   let polygon = new Polygon(points); // thus points = CH(points);
   //triangulate and add to the list triangles all the triangles
   //compute the smallest enclosing triangle and add it to the triangles list
+  let enclosingTriangle = new MinEnclosingTriangle(polygon);
+  enclosingTriangle.findMinEnclosingTriangle()
+  enclosingTriangle.minEnclosingTriangle.fill = "rgba(0,0,0,0)";
+  triangles.push(enclosingTriangle.minEnclosingTriangle);
 }
 
 function reset(){
