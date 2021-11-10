@@ -85,6 +85,20 @@ class Polygon {
         else if (this.lt_orientation(leftmost_point, p1, p2)) return -1;
         else return 1;
     }
+
+    isInsideTriangle(triangle) {
+        for (let i=0; i<this.points.length; ++i){
+            let rightTurn = 0;
+            let leftTurn = 0;
+            for (let j = 0; j < 3; ++j) {
+                if (!this.lt_orientation(this.points[i], triangle[j], triangle[(j + 1) % 3])) {
+                    rightTurn += 1;
+                } else leftTurn += 1;
+            }
+            if (!(rightTurn === 3 || leftTurn === 3)) return false;
+        }
+        return true;
+    }
 }
 
 class Triangle extends Polygon {
