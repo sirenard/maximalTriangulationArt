@@ -39,7 +39,7 @@ function draw() {
         }
         case states.DONE: {
             text("Here is your piece of art !", 30, 50);
-            points.map(p => p.draw());
+            //points.map(p => p.draw());
             triangles.map(t => {
                 t.draw();
             });
