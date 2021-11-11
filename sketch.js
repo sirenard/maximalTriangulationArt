@@ -41,6 +41,7 @@ function draw() {
             text("Here is your piece of art !", 30, 50);
             points.map(p => p.draw());
             triangles.map(t => {
+                t.fill = color(random(255),random(255),random(255));
                 t.draw();
             });
             break;
@@ -54,9 +55,6 @@ function solve() {
 
     let polygon = new Polygon(points); // thus points = CH(points);
     maximal_triangulation(polygon, triangles);
-    triangles.map(t => t.fill = color(random(255),random(255),random(255)));
-
-    //triangles.push(polygon);
     //compute the smallest enclosing triangle and add it to the triangles list
 
     let enclosingTriangle = new MinEnclosingTriangle(polygon);
