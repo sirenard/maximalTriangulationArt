@@ -21,10 +21,16 @@ class MinEnclosingTriangle {
                                 && this.polygon.get(k) !== this.polygon.get(j)
                                 && this.polygon.get(k) !== this.polygon.get(j + 1)) {
 
+                                //console.log(i,j,k);
                                 let enclosingTriangle = this.computeEnclosingTriangle(s1, s2, k, vertexB);
                                 if (enclosingTriangle !== null) {
-                                    if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area())
+                                    //if (this.minEnclosingTriangle !== null) console.log(i,j,k,enclosingTriangle.area(),this.minEnclosingTriangle.area());
+                                    //else console.log(i,j,k,enclosingTriangle.area());
+
+                                    if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area()) {
                                         this.minEnclosingTriangle = enclosingTriangle;
+                                        //console.log("current area: ", enclosingTriangle.area());
+                                    }
                                 }
                             }
                         }
@@ -35,7 +41,7 @@ class MinEnclosingTriangle {
     }
 
     enclosesAllPoints(enclosingTriangle){
-        return this.polygon.isInsideTriangle(enclosingTriangle.points);
+        return this.polygon.isInsideTriangle(enclosingTriangle.points, this.EPSILON);
     }
 
     computeEnclosingTriangle(s1, s2 , k, vertexB){
@@ -50,9 +56,12 @@ class MinEnclosingTriangle {
         let flushEnclosingTriangle = new Triangle([verticesACFlushTriangle[0], vertexB, verticesACFlushTriangle[1]]);
 
         //return smallest enclosing triangle between the two
+        //print("check enclosing", enclosingTangentTriangle.area(),  flushEnclosingTriangle.area(), this.enclosesAllPoints(enclosingTangentTriangle), this.enclosesAllPoints(flushEnclosingTriangle));
         if (enclosingTangentTriangle.area() >  flushEnclosingTriangle.area() && this.enclosesAllPoints(flushEnclosingTriangle)) return flushEnclosingTriangle;
         else if (this.enclosesAllPoints(enclosingTangentTriangle)) return enclosingTangentTriangle;
-        else return null;
+        else if (this.enclosesAllPoints(flushEnclosingTriangle)) return flushEnclosingTriangle;
+
+        return null;
     }
 
     computeVerticesACFromMidpointB(sideC, sideA, k){

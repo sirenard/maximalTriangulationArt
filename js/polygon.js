@@ -71,10 +71,13 @@ class Polygon {
     }
 
     /* return the turn orientation formed by p1 p2 p3: true if left otherwise false */
-    lt_orientation(p1, p2, p3) {
+    lt_orientation(p1, p2, p3, epsilon = 0) {
+        /*
+        epsilon argument is used to avoid imprecision problems. cross_product_determinant could be 1e-10 instead of 0 when p1, p2, p3 are aligned.
+         */
         let cross_product_determinant =
             p1.x * (p2.y - p3.y) - p1.y * (p2.x - p3.x) + p2.x * p3.y - p3.x * p2.y;
-        return cross_product_determinant >= 0;
+        return cross_product_determinant <= epsilon;
     }
 
     get_leftmost_point() {
@@ -92,16 +95,12 @@ class Polygon {
         else return 1;
     }
 
-    isInsideTriangle(triangle) {
+    isInsideTriangle(triangle, epsilon) {
         for (let i=0; i<this.points.length; ++i){
-            let rightTurn = 0;
-            let leftTurn = 0;
             for (let j = 0; j < 3; ++j) {
-                if (!this.lt_orientation(this.points[i], triangle[j], triangle[(j + 1) % 3])) {
-                    rightTurn += 1;
-                } else leftTurn += 1;
+                let turn = this.lt_orientation(this.points[i], triangle[j], triangle[(j + 1) % 3], epsilon);
+                if (!turn) return false;
             }
-            if (!(rightTurn === 3 || leftTurn === 3)) return false;
         }
         return true;
     }
@@ -111,6 +110,8 @@ class Triangle extends Polygon {
     constructor(points, fill = "red") {
         console.assert(points.length === 3);
         super(points, false, fill);
+        let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
+        this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
     }
 
     area() {

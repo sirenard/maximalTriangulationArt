@@ -56,12 +56,13 @@ function solve() {
     let polygon = new Polygon(points); // thus points = CH(points);
     maximal_triangulation(polygon, triangles);
     //compute the smallest enclosing triangle and add it to the triangles list
-  let enclosingTriangle = new MinEnclosingTriangle(polygon);
-  enclosingTriangle.findMinEnclosingTriangle()
-  enclosingTriangle.minEnclosingTriangle.fill = "rgba(0,0,0,0)";
-  triangles.push(enclosingTriangle.minEnclosingTriangle);
 
-  draw();
+    let enclosingTriangle = new MinEnclosingTriangle(polygon);
+    enclosingTriangle.findMinEnclosingTriangle();
+    enclosingTriangle.minEnclosingTriangle.fill = "rgba(0,0,0,0)";
+    triangles.push(enclosingTriangle.minEnclosingTriangle);
+
+    draw();
 }
 
 function reset() {
