@@ -10,7 +10,7 @@ class DobkinSnyder{
         let polygon = this.polygon;
         let a = r, b = polygon.next(a), c = polygon.next(b);
 
-        let currentMaxTriangle = new Triangle([polygon.points[a], polygon.points[b], polygon.points[c]]);
+        let currentMaxTriangle = new Triangle([polygon.points[a], polygon.points[b], polygon.points[c]], false);
         let m = currentMaxTriangle.area();
 
         if(this.conserveHistory){
@@ -22,9 +22,9 @@ class DobkinSnyder{
 
         while(true){
             while (true){
-                let t = new Triangle([polygon.points[a], polygon.points[b], polygon.points[c]]);
-                let t1 = new Triangle([polygon.points[a], polygon.points[b], polygon.points[polygon.next(c)]]);
-                let t2 = new Triangle([polygon.points[a], polygon.points[polygon.next(b)], polygon.points[c]]);
+                let t = new Triangle([polygon.points[a], polygon.points[b], polygon.points[c]], false);
+                let t1 = new Triangle([polygon.points[a], polygon.points[b], polygon.points[polygon.next(c)]], false);
+                let t2 = new Triangle([polygon.points[a], polygon.points[polygon.next(b)], polygon.points[c]], false);
 
                 if (t1.area() >= t.area()){
                     c = polygon.next(c);
@@ -47,7 +47,7 @@ class DobkinSnyder{
                 }
             }
 
-            let newTriangle = new Triangle([polygon.points[a],polygon.points[b],polygon.points[c]]);
+            let newTriangle = new Triangle([polygon.points[a],polygon.points[b],polygon.points[c]], false);
             let newTriangleArea = newTriangle.area();
 
             if (newTriangleArea>=m){
@@ -65,7 +65,7 @@ class DobkinSnyder{
 
             if(this.conserveHistory){
                 this.history.push({
-                    "triangle": new Triangle([polygon.points[a],polygon.points[b],polygon.points[c]]),
+                    "triangle": new Triangle([polygon.points[a],polygon.points[b],polygon.points[c]], false),
                     "currentMax": currentMaxTriangle
                 });
             }

@@ -1,122 +1,183 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 const states = {
-    TEMP: 0,
-    EXECUTION: 1
+    DRAWING: 0,
+    TEMP: 1,
+    EXECUTION: 2
 };
 
-let currentState = states.TEMP;
-let solveButton, resetButton, showTriangleButton;
+let currentState = states.DRAWING;
+let solveButton, resetButton, showTriangleButton, drawExamplePolygonButton;
 let showBiggestTriangle = true;
+let realBiggestTriangle;
 
 let polygon;
+let points = [];
 let history = [];
+let executionStep = -1;
 let scale = 0.2;
 
-let names = ["b0", "b1", "c2", "a0", "b2", "a1", "c0", "a2", "c1"]; //points name
+let names = ["a", "b", "c"]; //points name
 
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     canvas.mousePressed(canvasClicked); //click on buttons are not detected
 
-    createPolygon();
+    createCounterExamplePolygonPoints();
 
     resetButton = createButton("Reset");
     resetButton.position(30, 60);
     resetButton.mousePressed(reset);
 
-    showTriangleButtonHandler()
-
-    solveButton = createButton("Execute Dobkin & Snyder's algorithm");
+    solveButton = createButton("Done");
     solveButton.position(30, 120);
     solveButton.mousePressed(solve);
 
+    drawExamplePolygonButton = createButton("Draw counter-example polygon");
+    drawExamplePolygonButton.position(30, 90);
+    drawExamplePolygonButton.mousePressed(drawExamplePolygonButtonHandler);
+
+    reset();
+}
+
+function drawExamplePolygonButtonHandler() {
+    points = createCounterExamplePolygonPoints();
+    solve();
 }
 
 function showTriangleButtonHandler() {
-    let text = showBiggestTriangle?"Show maximal triangle":"Hide maximal triangle"
+    let text = showBiggestTriangle ? "Show real maximal triangle" : "Hide real maximal triangle"
     showBiggestTriangle = !showBiggestTriangle;
-    if(showTriangleButton)showTriangleButton.remove();
+    if (showTriangleButton) showTriangleButton.remove();
     showTriangleButton = createButton(text);
     showTriangleButton.position(30, 90);
     showTriangleButton.mousePressed(showTriangleButtonHandler);
 }
 
-function createPolygon() {
+function createCounterExamplePolygonPoints() {
     // create the counter-example polygon
-    let shift = windowHeight/scale;
-    polygon = new Polygon([ //counter example of the algorithm
-        new Point(1000, shift-1000),
-        new Point(759, shift-2927),
-        new Point(2506, shift-4423),
-        new Point(3040, shift-4460),
-        new Point(4745, shift-4322),
-        new Point(4752, shift-4262),
-        new Point(5000, shift-1000),
-        new Point(3383, shift-413),
-        new Point(1213, shift-691)
-    ],convexHull=false, color="white");
+    //let shift = windowHeight/scale;
+    let yshift = windowHeight / scale;
+    let res = [ //counter example of the algorithm
+        new Point(1000, yshift - 1000),
+        new Point(759, yshift - 2927),
+        new Point(2506, yshift - 4423),
+        new Point(3040, yshift - 4460),
+        new Point(4745, yshift - 4322),
+        new Point(4752, yshift - 4262),
+        new Point(5000, yshift - 1000),
+        new Point(3383, yshift - 413),
+        new Point(1213, yshift - 691)
+    ];
+
+    res.map(point => {
+        point.x *= scale;
+        point.y *= scale;
+    });
+
+    return res;
 }
 
 function draw() {
     background(128);
-    polygon.draw(scale);
-
-    if(history.length){
-        if(history[0]["triangle"]){
-            let curentTriangle = history[0]["triangle"];
-            curentTriangle.fill = "rgba(0,255,0, 0.25)";
-            curentTriangle.draw(scale);
+    fill("black");
+    stroke("black");
+    textSize(20);
+    switch (currentState) {
+        case states.DRAWING: {
+            text("Draw a polygon point by point (CH will be computed) or directly draw a counter-example polygon", 30, 30);
+            break;
         }
-        let curentMaxTriangle = history[0]["currentMax"];
+        case states.EXECUTION: {
+            text("Left click to show the next step of dobkin & snyder's algorithm", 30, 30);
+            polygon.draw();
+            if (executionStep >= 0) {
+                let i = executionStep;
+                if (i !== history.length) {
+                    let currentTriangle = history[i]["triangle"];
+                    currentTriangle.fill = "rgba(0,255,0, 0.25)";
+                    currentTriangle.draw();
 
-        curentMaxTriangle.fill = "rgba(255,0,0, 0.25)";
+                    fill("black");
+                    stroke("black");
+                    textSize(15);
+                    for (let i = 0; i < 3; ++i) {
+                        let point = currentTriangle.get(i)
+                        text(names[i], point.x, point.y)
+                    }
+                } else {
+                    --i;
+                }
+                let curentMaxTriangle = history[i]["currentMax"];
+                curentMaxTriangle.fill = "rgba(255,0,0, 0.25)";
+                curentMaxTriangle.draw();
+            }
 
-        curentMaxTriangle.draw(scale);
+            if (showBiggestTriangle) {
+                realBiggestTriangle.fill = "rgba(0,0,255,0.25)";
+                realBiggestTriangle.draw();
+            }
+        }
     }
 
-    if(showBiggestTriangle){
-        let t = new Triangle([polygon.points[0], polygon.points[3], polygon.points[6]], "rgba(0,0,255,0.25)");
-        t.draw(scale);
-    }
+    points.map(p => p.draw());
 
-    textSize(12);
-    fill("Black");
-    stroke("Black");
-    for (let i = 0; i < polygon.points.length; ++i) {
-        let point = polygon.points[i];
-        let label = names[i];
-        text(label, point.x*scale, point.y*scale);
-    }
 }
 
-function solve(){
+function solve() {
+    if (points.length < 3) {
+        alert("You must draw at least 3 points");
+        return
+    }
+    polygon = new Polygon(points);
+    points = polygon.points; //correspond to the convex hull
+    polygon.points.reverse(); // clockwise order
+    polygon.fill = "white";
+
     currentState = states.EXECUTION;
     solveButton.hide();
+    drawExamplePolygonButton.hide();
+    showTriangleButton.show();
 
+    realBiggestTriangle = biggest_triangle(polygon)[0];
     let ds = new DobkinSnyder(polygon);
-    ds.maxTriangle();
+    ds.maxTriangle(points.length - 1);
     history = ds.getHistory();
 }
 
-function reset(){
-    currentState = states.TEMP;
+function reset() {
+    currentState = states.DRAWING;
+
+    showBiggestTriangle = true;
+    showTriangleButtonHandler()
+
     solveButton.show();
-    history = []
+    drawExamplePolygonButton.show();
+    showTriangleButton.hide();
+    history = [];
+    executionStep = -1;
+    points = [];
+
+
 }
 
-function canvasClicked(){
-    if (currentState === states.EXECUTION){
-        if(history.length > 1){
-            history.splice(0,1);
-        } else if(history.length === 1 && history[0]["triangle"]){
-            history[0]["triangle"] = undefined;
+function canvasClicked() {
+    switch (currentState) {
+        case states.DRAWING: {
+            let newPoint = new Point(mouseX, mouseY);
+            points.push(newPoint)
+            break;
+        }
+        case states.EXECUTION: {
+            if (mouseButton === LEFT && executionStep < history.length) ++executionStep;
+            else if (mouseButton === RIGHT && executionStep >= 0) --executionStep;
+            break;
         }
     }
 }
 
 // This Redraws the Canvas when resized
-windowResized = function() {
+windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 };

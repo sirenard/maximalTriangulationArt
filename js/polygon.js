@@ -107,11 +107,13 @@ class Polygon {
 }
 
 class Triangle extends Polygon {
-    constructor(points, fill = "red") {
+    constructor(points, sort=true, fill = "red") {
         console.assert(points.length === 3);
         super(points, false, fill);
-        let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
-        this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
+        if(sort){
+            let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
+            this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
+        }
     }
 
     area() {
