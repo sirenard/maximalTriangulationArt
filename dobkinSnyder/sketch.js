@@ -140,7 +140,7 @@ function solve() {
     drawExamplePolygonButton.hide();
     showTriangleButton.show();
 
-    realBiggestTriangle = biggest_triangle(polygon)[0];
+    realBiggestTriangle = largest_triangle(polygon)[0];
     let ds = new DobkinSnyder(polygon);
     ds.maxTriangle(points.length - 1);
     history = ds.getHistory();

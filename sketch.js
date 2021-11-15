@@ -53,7 +53,7 @@ function solve() {
     solveButton.hide();
 
     let polygon = new Polygon(points); // thus points = CH(points);
-    maximal_triangulation(polygon, triangles);
+    largest_triangulation(polygon, triangles);
     triangles.map(t => t.fill = color(random(255),random(255),random(255)));
 
     //triangles.push(polygon);
