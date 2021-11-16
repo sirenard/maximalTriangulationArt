@@ -1,6 +1,7 @@
 function largest_triangle(polygon) {
     /**
      * Find the largest triangle in a polygon
+     * Algorithm credit and source: Keikha, Löffer, Urhausen and van der Hoog - http://arxiv.org/abs/1705.11035
      * @param {Polygon} polygon
      * @return {array} [Triangle, [a_i, b_i, c_i]] where the second value is
      * the indexes of the three points which compose the Triangle
