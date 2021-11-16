@@ -8,37 +8,41 @@ const states = {
 let currentState = states.DRAWING;
 let points = [];
 let triangles = [];
-let solveButton, resetButton;
+let solveButton, resetButton, dobkinSnyderButton;
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     canvas.mousePressed(canvasClicked); //click on buttons are not detected
 
     resetButton = createButton("Reset");
-    resetButton.position(30, 85);
+    resetButton.position(30, 60);
     resetButton.mousePressed(reset);
 
     solveButton = createButton("Solve");
-    solveButton.position(100, 85);
+    solveButton.position(100, 60);
     solveButton.mousePressed(solve);
+
+    dobkinSnyderButton = createButton("See Dodkin & Snyder algorithm");
+    dobkinSnyderButton.position(170, 60);
+    dobkinSnyderButton.mousePressed(() => window.location.href = "./dobkinSnyder/subindex.html");
 
     noLoop();
 
 }
 
 function draw() {
-    background(128);
-    textSize(30);
+    background(255, 255, 255);
+    textSize(20);
     fill("Black");
     stroke("Black");
     switch (currentState) {
         case states.DRAWING: {
-            text("Draw a convex polygon (don't worry, the convex hull will be computed for you)", 30, 50);
+            text("Draw some points to shape a convex polygon (don't worry, the convex hull will be computed for you)", 30, 30);
             points.map(p => p.draw());
             break;
         }
         case states.DONE: {
-            text("Here is your piece of art !", 30, 50);
+            text("Here is your unique piece of \"art\" !", 30, 30);
             //points.map(p => p.draw());
             triangles.map(t => {
                 t.draw();

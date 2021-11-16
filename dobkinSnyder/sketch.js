@@ -7,7 +7,7 @@ const states = {
 };
 
 let currentState = states.DRAWING;
-let solveButton, resetButton, showTriangleButton, drawExamplePolygonButton;
+let solveButton, resetButton, showTriangleButton, drawExamplePolygonButton, artButton;
 let showBiggestTriangle = true;
 let realBiggestTriangle;
 
@@ -20,6 +20,7 @@ let scale = 0.2;
 let names = ["a", "b", "c"]; //points name
 
 
+
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     canvas.mousePressed(canvasClicked); //click on buttons are not detected
@@ -27,16 +28,20 @@ function setup() {
     createCounterExamplePolygonPoints();
 
     resetButton = createButton("Reset");
-    resetButton.position(30, 60);
+    resetButton.position(30, 100);
     resetButton.mousePressed(reset);
 
-    solveButton = createButton("Done");
-    solveButton.position(30, 120);
+    solveButton = createButton("Solve");
+    solveButton.position(100, 100);
     solveButton.mousePressed(solve);
 
     drawExamplePolygonButton = createButton("Draw counter-example polygon");
-    drawExamplePolygonButton.position(30, 90);
+    drawExamplePolygonButton.position(170, 100);
     drawExamplePolygonButton.mousePressed(drawExamplePolygonButtonHandler);
+
+    artButton = createButton("Go back to triangulation and enclosed triangle algorithms");
+    artButton.position(30, 60);
+    artButton.mousePressed(() => window.location.href = "../index.html");
 
     reset();
 }
@@ -51,7 +56,7 @@ function showTriangleButtonHandler() {
     showBiggestTriangle = !showBiggestTriangle;
     if (showTriangleButton) showTriangleButton.remove();
     showTriangleButton = createButton(text);
-    showTriangleButton.position(30, 90);
+    showTriangleButton.position(30, 140);
     showTriangleButton.mousePressed(showTriangleButtonHandler);
 }
 
@@ -80,7 +85,7 @@ function createCounterExamplePolygonPoints() {
 }
 
 function draw() {
-    background(128);
+    background(255, 255, 255);
     fill("black");
     stroke("black");
     textSize(20);
