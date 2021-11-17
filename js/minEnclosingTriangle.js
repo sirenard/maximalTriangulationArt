@@ -6,30 +6,33 @@ class MinEnclosingTriangle {
     }
 
     findMinEnclosingTriangle(){
-        for (let i = 0; i < this.polygon.getLength(); ++i){
-            let s1 = [this.polygon.get(i), this.polygon.get(i+1)]; // first side of enclosing triangle
+        if (this.polygon.getLength() === 3) this.minEnclosingTriangle = this.polygon;
+        else if (this.polygon.getLength() > 3) {
+            for (let i = 0; i < this.polygon.getLength(); ++i) {
+                let s1 = [this.polygon.get(i), this.polygon.get(i + 1)]; // first side of enclosing triangle
 
-            for (let j = 0; j < this.polygon.getLength(); ++j){
-                let s2 = [this.polygon.get(j), this.polygon.get(j+1)]; // second side of enclosing triangle
+                for (let j = 0; j < this.polygon.getLength(); ++j) {
+                    let s2 = [this.polygon.get(j), this.polygon.get(j + 1)]; // second side of enclosing triangle
 
-                if (this.polygon.get(j) !== this.polygon.get(i)){
-                    let vertexB = this.getLineIntersection(s1, s2);
-                    if (vertexB) { //not parallel lines
-                        for (let k = 0; k < this.polygon.getLength(); ++k) {
-                            if (this.polygon.get(k) !== this.polygon.get(i)
-                                && this.polygon.get(k) !== this.polygon.get(i + 1)
-                                && this.polygon.get(k) !== this.polygon.get(j)
-                                && this.polygon.get(k) !== this.polygon.get(j + 1)) {
+                    if (this.polygon.get(j) !== this.polygon.get(i)) {
+                        let vertexB = this.getLineIntersection(s1, s2);
+                        if (vertexB) { //not parallel lines
+                            for (let k = 0; k < this.polygon.getLength(); ++k) {
+                                if (this.polygon.get(k) !== this.polygon.get(i)
+                                    && this.polygon.get(k) !== this.polygon.get(i + 1)
+                                    && this.polygon.get(k) !== this.polygon.get(j)
+                                    && this.polygon.get(k) !== this.polygon.get(j + 1)) {
 
-                                //console.log(i,j,k);
-                                let enclosingTriangle = this.computeEnclosingTriangle(s1, s2, k, vertexB);
-                                if (enclosingTriangle !== null) {
-                                    //if (this.minEnclosingTriangle !== null) console.log(i,j,k,enclosingTriangle.area(),this.minEnclosingTriangle.area());
-                                    //else console.log(i,j,k,enclosingTriangle.area());
+                                    //console.log(i,j,k);
+                                    let enclosingTriangle = this.computeEnclosingTriangle(s1, s2, k, vertexB);
+                                    if (enclosingTriangle !== null) {
+                                        //if (this.minEnclosingTriangle !== null) console.log(i,j,k,enclosingTriangle.area(),this.minEnclosingTriangle.area());
+                                        //else console.log(i,j,k,enclosingTriangle.area());
 
-                                    if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area()) {
-                                        this.minEnclosingTriangle = enclosingTriangle;
-                                        //console.log("current area: ", enclosingTriangle.area());
+                                        if (this.minEnclosingTriangle === null || enclosingTriangle.area() < this.minEnclosingTriangle.area()) {
+                                            this.minEnclosingTriangle = enclosingTriangle;
+                                            //console.log("current area: ", enclosingTriangle.area());
+                                        }
                                     }
                                 }
                             }
@@ -117,6 +120,10 @@ class MinEnclosingTriangle {
     }
 
     computeVerticesACFromFlushB(sideC, sideA, sideB){
+        /**
+         * Comuputes enclosing triangle of three flush sides
+         * @type {*}
+         */
         let vertexA = this.getLineIntersection(sideA, sideB);
         let vertexC = this.getLineIntersection(sideC, sideB);
         return [vertexA, vertexC];
