@@ -23,8 +23,12 @@ function setup() {
     solveButton.mousePressed(solve);
 
     dobkinSnyderButton = createButton("See Dodkin & Snyder algorithm");
-    dobkinSnyderButton.position(170, 60);
+    dobkinSnyderButton.position(30, 100);
     dobkinSnyderButton.mousePressed(() => window.location.href = "./dobkinSnyder/subindex.html");
+
+    reportButton = createButton("See report");
+    reportButton.position(170, 60);
+    reportButton.mousePressed(() => window.open("https://sirenard.github.io/maximalTriangulationArt/report.pdf"));
 
     noLoop();
 
