@@ -137,7 +137,6 @@ function solve() {
     }
     polygon = new Polygon(points);
     points = polygon.points; //correspond to the convex hull
-    polygon.points.reverse(); // clockwise order
     polygon.fill = "white";
 
     currentState = states.EXECUTION;

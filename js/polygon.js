@@ -16,7 +16,10 @@ class Point {
 class Polygon {
     constructor(points, convexHull = true, fill = "blue") {
         this.points = points;
-        if (convexHull) this.graham_scan();
+        if (convexHull) {
+            this.graham_scan();
+            this.points = this.points.reverse() // our graham scan function compute in C.C.O
+        }
         this.fill = fill;
     }
 
@@ -48,9 +51,10 @@ class Polygon {
         for (let i = 0; i < this.points.length; ++i)
             vertex(this.points[i].x*scale, this.points[i].y*scale)
         endShape(CLOSE);
+        fill("Black");
     }
 
-    /* Compute the convex hull of the polygon by removing internal points */
+    /* Compute the convex hull of the polygon by removing internal points in C.C.O. */
     graham_scan() {
         let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
         this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
@@ -107,13 +111,9 @@ class Polygon {
 }
 
 class Triangle extends Polygon {
-    constructor(points, sort=true, fill = "red") {
+    constructor(points, fill = "red") {
         console.assert(points.length === 3);
         super(points, false, fill);
-        if(sort){
-            let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
-            this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
-        }
     }
 
     area() {
