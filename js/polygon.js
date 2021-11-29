@@ -18,12 +18,12 @@ class Polygon {
         this.points = points;
         if (convexHull) {
             this.graham_scan();
-            this.points = this.points.reverse() // our graham scan function compute in C.C.O
+            this.points = this.points.reverse() // our graham_scan() compute in CCW
         }
         this.fill = fill;
     }
 
-    get(i){ //get point i in polygon (cyclic)
+    get(i){ //get point i in polygon (CCW)
         return this.points[i% this.points.length];
     }
 
@@ -54,7 +54,7 @@ class Polygon {
         fill("Black");
     }
 
-    /* Compute the convex hull of the polygon by removing internal points in C.C.O. */
+    /* Compute the convex hull of the polygon by removing internal points in CCW */
     graham_scan() {
         let leftmost_point = this.get_leftmost_point(); // smallest x coord. point
         this.points.sort((p1, p2) => this.compare_radial(p1, p2, leftmost_point)); // sort points around leftmost_point
@@ -74,11 +74,10 @@ class Polygon {
         this.points = stack;
     }
 
-    /* return the turn orientation formed by p1 p2 p3: true if left otherwise false */
+    /* return the turn orientation formed by p1 p2 p3: true if left otherwise false
+      epsilon argument is used to avoid imprecision problems. cross_product_determinant could be 1e-10 instead of 0 when p1, p2, p3 are aligned.
+     */
     lt_orientation(p1, p2, p3, epsilon = 0) {
-        /*
-        epsilon argument is used to avoid imprecision problems. cross_product_determinant could be 1e-10 instead of 0 when p1, p2, p3 are aligned.
-         */
         let cross_product_determinant =
             p1.x * (p2.y - p3.y) - p1.y * (p2.x - p3.x) + p2.x * p3.y - p3.x * p2.y;
         return cross_product_determinant <= epsilon;
