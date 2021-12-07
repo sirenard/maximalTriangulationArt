@@ -1,5 +1,5 @@
 # How use the website: 
-<https://sirenard.github.io/maximaltriangulationart>
+<https://sirenard.github.io/maximalTriangulationArt>
 1. Draw some points in order to shape convex polygon and click on solve
 2. See the result of the maximum-area triangulation and minimum-area triangle enclosed algorithms
 3. Click on the screen to see each step of the algorithm
