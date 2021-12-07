@@ -104,11 +104,6 @@ function createCounterExamplePolygonPoints() {
     s = s + "\\draw " + nodes.join(" --") + " -- cycle;\n";
     //console.log(s)
 
-    res.map(point => {
-        point.x *= scale;
-        point.y *= scale;
-    });
-
     positionPolygon(res);
 
     return res;
