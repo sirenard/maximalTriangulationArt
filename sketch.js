@@ -34,7 +34,7 @@ function setup() {
 
     dobkinSnyderButton = createButton("See Dodkin & Snyder algorithm");
     dobkinSnyderButton.position(30, 100);
-    dobkinSnyderButton.mousePressed(() => window.location.href = "./dobkinSnyder/subindex.html");
+    dobkinSnyderButton.mousePressed(() => window.location.href = "dobkinSnyder/index.html");
 
     reportButton = createButton("See report");
     reportButton.position(30, 140);
