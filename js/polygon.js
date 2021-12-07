@@ -6,10 +6,11 @@ class Point {
         this.radius = radius;
     }
 
-    draw() {
+    draw(scale=1, xshift=0, yshift=0) {
         fill(this.color);
         stroke(this.color);
-        ellipse(this.x, this.y, this.radius, this.radius);
+
+        ellipse(this.x * scale + xshift, this.y * scale + yshift, this.radius, this.radius);
     }
 }
 
@@ -45,11 +46,12 @@ class Polygon {
         return sub_points;
     }
 
-    draw(scale=1) {
+    draw(scale=1, xshift=0, yshift=0) {
         fill(this.fill);
         beginShape();
-        for (let i = 0; i < this.points.length; ++i)
-            vertex(this.points[i].x*scale, this.points[i].y*scale)
+        for (let i = 0; i < this.points.length; ++i) {
+            vertex(this.points[i].x * scale + xshift, this.points[i].y * scale + yshift);
+        }
         endShape(CLOSE);
         fill("Black");
     }
